@@ -62,27 +62,147 @@ The dataset represents **transaction-level pharmacy sales data from a European p
 | Pharmacy Details | Pharmacy Type (Urban, Suburban, Rural) |
 | Promotions | Promotion Status |
 
-### 📈 Key Metrics
+### 📈 Key Metrics and Data Analysis Expressions (DAX)
 
 - Total Revenue
 ```
 TOTAL REVENUE = SUM(FactSales[Revenue])
+-----------------------------------------------------------------
+TOTAL REVENUE MoM% = VAR CurrentPeriod = [TOTAL REVENUE]
+VAR LastYear = CALCULATE(
+    [TOTAL REVENUE],
+    PREVIOUSMONTH('Calendar'[Date])
+)
+RETURN
+DIVIDE(
+    CurrentPeriod - LastYear,
+    LastYear,
+    BLANK()
+)
+--------------------------------------------------------------------
+TOTAL REVENUE MoM% WITH ARROW = VAR MoMValue = [TOTAL REVENUE MoM%]
+RETURN
+IF(
+    ISBLANK(MoMValue),
+    "--",
+    IF(
+        MoMValue >= 0,
+         FORMAT(MoMValue, "0.00%") & "▲ ",
+         FORMAT(MoMValue, "0.00%") & "▼ "
+    )
+)
 ```
 - Total Cost
 ```
 TOTAL COST = SUM(FactSales[Cost])
+-------------------------------------------------------------
+TOTAL COST MoM% = VAR CurrentPeriod = [TOTAL COST]
+VAR LastYear = CALCULATE(
+    [TOTAL COST],
+    PREVIOUSMONTH('Calendar'[Date])
+)
+RETURN
+DIVIDE(
+    CurrentPeriod - LastYear,
+    LastYear,
+    BLANK()
+)
+------------------------------------------------------------------
+TOTAL COST MoM% WITH ARROW = VAR MoMValue = [TOTAL COST MoM%]
+RETURN
+IF(
+    ISBLANK(MoMValue),
+    "--",
+    IF(
+        MoMValue >= 0,
+         FORMAT(MoMValue, "0.00%") & "▲ ",
+         FORMAT(MoMValue, "0.00%") & "▼ "
+    )
+)
 ```
 - Total Margin
 ```
 TOTAL MARGIN = SUM(FactSales[Margin])
+----------------------------------------------------------------------
+TOTAL MARGIN MoM% = VAR CurrentPeriod = [TOTAL MARGIN]
+VAR LastYear = CALCULATE(
+    [TOTAL MARGIN],
+    PREVIOUSMONTH('Calendar'[Date])
+)
+RETURN
+DIVIDE(
+    CurrentPeriod - LastYear,
+    LastYear,
+    BLANK()
+)
+------------------------------------------------------------------------
+TOTAL MARGIN MoM% WITH ARROW = VAR MoMValue = [TOTAL MARGIN MoM%]
+RETURN
+IF(
+    ISBLANK(MoMValue),
+    "--",
+    IF(
+        MoMValue >= 0,
+         FORMAT(MoMValue, "0.00%") & "▲ ",
+         FORMAT(MoMValue, "0.00%") & "▼ "
+    )
+)
 ```
 - Margin Percentage
 ```
 MARGIN % = DIVIDE(SUM(FactSales[Margin]),SUM(FactSales[Cost]))
+----------------------------------------------------------------------
+MARGIN % MoM% = VAR CurrentPeriod = [MARGIN %]
+VAR LastYear = CALCULATE(
+    [MARGIN %],
+    PREVIOUSMONTH('Calendar'[Date])
+)
+RETURN
+DIVIDE(
+    CurrentPeriod - LastYear,
+    LastYear,
+    BLANK()
+)
+-----------------------------------------------------------------------------
+MARGIN % MoM% WITH ARROW = VAR MoMValue = [MARGIN % MoM%]
+RETURN
+IF(
+    ISBLANK(MoMValue),
+    "--",
+    IF(
+        MoMValue >= 0,
+         FORMAT(MoMValue, "0.00%") & "▲ ",
+         FORMAT(MoMValue, "0.00%") & "▼ "
+    )
+)
 ```
 - Units Sold
 ```
 TOTAL UNITS SOLD = SUM(FactSales[UnitsSold])
+----------------------------------------------------------------------
+TOTAL UNITS SOLD MoM% = VAR CurrentPeriod = [TOTAL UNITS SOLD]
+VAR LastYear = CALCULATE(
+    [TOTAL UNITS SOLD],
+    PREVIOUSMONTH('Calendar'[Date])
+)
+RETURN
+DIVIDE(
+    CurrentPeriod - LastYear,
+    LastYear,
+    BLANK()
+)
+---------------------------------------------------------------------
+TOTAL UNITS SOLD MoM% WITH ARROW = VAR MoMValue = [TOTAL UNITS SOLD MoM%]
+RETURN
+IF(
+    ISBLANK(MoMValue),
+    "--",
+    IF(
+        MoMValue >= 0,
+         FORMAT(MoMValue, "0.00%") & "▲ ",
+         FORMAT(MoMValue, "0.00%") & "▼ "
+    )
+)
 ```
 - Pharmacies below Target Margin
 ```
@@ -99,6 +219,14 @@ CALCULATE(
     [TOTAL REVENUE],
     TOPN(1, ALL(FactSales[PharmacyID]), [TOTAL REVENUE], DESC)
 )
+```
+- Sales Volume
+```
+SALES VOLUME = COUNT(FactSales[SalesID])
+```
+- Product Count
+```
+PRODUCT COUNT = DISTINCTCOUNT(DimProduct[ProductID])
 ```
 The dataset structure supports **hierarchical analysis from country → region → pharmacy → product.**
 
@@ -163,6 +291,8 @@ ADDCOLUMNS(
     "Day Name", FORMAT ( [Date], "dddd" )
 )
 ```
+<img width="1340" height="683" alt="Data Model" src="https://github.com/user-attachments/assets/202138c6-f82e-4501-8c68-feeb20975b54" />
+
 This model enables **efficient filtering, drill-down analysis, and high performance in Power BI.**
 
 ---
