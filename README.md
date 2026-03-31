@@ -1,4 +1,4 @@
-# 💊⚕️ European Pharmacy Sales & Profitability Analysis
+# 💊⚕️ European Pharmacy Sales & Profitability Analysis (Power BI)
 
 A multipage **Power BI Analytics Dashboard** designed to analyze revenue, profitability, product performance and regional trends across a European distribution network.
 
